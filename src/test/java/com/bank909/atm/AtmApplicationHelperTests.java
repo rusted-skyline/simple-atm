@@ -9,9 +9,9 @@ import com.bank909.atm.exception.InvalidInputException;
 import com.bank909.atm.service.AuthenticationService;
 import com.bank909.atm.service.BankAccountService;
 import com.bank909.atm.session.Session;
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.Console;
 import java.math.BigDecimal;
@@ -22,8 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
-class AtmApplicationTests {
+class AtmApplicationHelperTests {
 
     private BankAccountService bankAccountService;
     private AuthenticationService authenticationService;
@@ -166,18 +165,6 @@ class AtmApplicationTests {
     }
 
     @Test
-    void testPerformTransactionExit() throws InvalidInputException, BankAccountDoesNotExist, InsufficientBalanceException {
-        when(bankAccountService.findByAccountNumber(Long.valueOf(accountNumber))).thenReturn(testBankAccountOptional);
-        when(console.readLine(AtmApplicationHelper.CHOICE_PROMPT)).thenReturn(AtmApplicationHelper.CHOICE_THREE);
-
-        AtmApplicationHelper.performTransaction(console,
-                new Session(Long.valueOf(accountNumber)),
-                bankAccountService);
-
-        verify(console.printf("Thanks for choosing " + AtmApplicationHelper.BANK_NAME + " and have a great day!\n"));
-    }
-
-    @Test
     void testPerformTransactionInvalidChoice() {
         when(console.readLine(AtmApplicationHelper.CHOICE_PROMPT)).thenReturn("99");
 
@@ -187,5 +174,22 @@ class AtmApplicationTests {
                     bankAccountService);
         });
     }
+
+    @Test
+    void testPerformTransactionExit() throws InvalidInputException, Exception {
+        when(bankAccountService.findByAccountNumber(Long.valueOf(accountNumber))).thenReturn(testBankAccountOptional);
+        when(console.readLine(AtmApplicationHelper.CHOICE_PROMPT)).thenReturn(AtmApplicationHelper.CHOICE_FOUR);
+
+        SystemLambda.catchSystemExit(() -> {
+            try {
+                AtmApplicationHelper.performTransaction(console,
+                        new Session(Long.valueOf(accountNumber)),
+                        bankAccountService);
+            } catch (InvalidInputException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
 
 }
