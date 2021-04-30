@@ -42,7 +42,7 @@ public class BankAccountServiceImpl implements BankAccountService {
             account.setUpdated(OffsetDateTime.now());
             bankAccountRepository.save(account);
         } else {
-            throw new BankAccountDoesNotExist();
+            throw new BankAccountDoesNotExist("Account does not exist.");
         }
     }
 
@@ -53,13 +53,13 @@ public class BankAccountServiceImpl implements BankAccountService {
         if (bankAccount.isPresent()) {
             BankAccount account = bankAccount.get();
             if (account.getBalance().compareTo(amount) < 0) {
-                throw new InsufficientBalanceException();
+                throw new InsufficientBalanceException("Insuffient balance in account.");
             }
             account.setBalance(account.getBalance().subtract(amount));
             account.setUpdated(OffsetDateTime.now());
             bankAccountRepository.save(account);
         } else {
-            throw new BankAccountDoesNotExist();
+            throw new BankAccountDoesNotExist("Account does not exist.");
         }
     }
 }

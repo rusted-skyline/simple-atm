@@ -176,7 +176,7 @@ class AtmApplicationHelperTests {
     }
 
     @Test
-    void testPerformTransactionExit() throws InvalidInputException, Exception {
+    void testPerformTransactionExit() throws Exception {
         when(bankAccountService.findByAccountNumber(Long.valueOf(accountNumber))).thenReturn(testBankAccountOptional);
         when(console.readLine(AtmApplicationHelper.CHOICE_PROMPT)).thenReturn(AtmApplicationHelper.CHOICE_FOUR);
 
@@ -185,7 +185,7 @@ class AtmApplicationHelperTests {
                 AtmApplicationHelper.performTransaction(console,
                         new Session(Long.valueOf(accountNumber)),
                         bankAccountService);
-            } catch (InvalidInputException e) {
+            } catch (InvalidInputException | InsufficientBalanceException | BankAccountDoesNotExist e) {
                 e.printStackTrace();
             }
         });
