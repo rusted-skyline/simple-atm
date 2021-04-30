@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
-@Transactional
 public class BankAccountServiceImpl implements BankAccountService {
 
     private final static Logger log = LoggerFactory.getLogger(BankAccountServiceImpl.class);
@@ -39,6 +38,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
+    @Transactional
     public void deposit(Long accountNumber, BigDecimal amount) throws BankAccountDoesNotExist {
         Optional<BankAccount> bankAccount = bankAccountRepository.findByAccountNumber(accountNumber);
         if (bankAccount.isPresent()) {
@@ -51,6 +51,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
+    @Transactional
     public void withdraw(Long accountNumber, BigDecimal amount) throws BankAccountDoesNotExist, InsufficientBalanceException {
         Optional<BankAccount> bankAccount = bankAccountRepository.findByAccountNumber(accountNumber);
         if (bankAccount.isPresent()) {
