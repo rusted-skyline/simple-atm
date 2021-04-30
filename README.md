@@ -3,21 +3,37 @@
 This application provides a simple console-based interface that models a very 
 primitive ATM interface.
 
-## Getting Started
+## Requirements
+
+* Java 8
+* Linux-based Console (tested with Bash on Mac OS X Big Sur)
+
+## Build and Test
 
 Compile the code:
 ```
 ./build.sh
 ```
 
+Run the tests:
+```
+./test.sh
+```
+
+## Usage
+
 Run the application:
 ```
 ./run.sh
 ```
 
-Run the tests:
+### Test Credentials
+
+The application is pre-built with test credentials
+
 ```
-./test.sh
+Account number: 1234567812345678
+PIN: 1234
 ```
 
 ## Assumptions
