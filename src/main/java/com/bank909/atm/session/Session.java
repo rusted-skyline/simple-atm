@@ -1,0 +1,21 @@
+package com.bank909.atm.session;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+
+
+public class Session {
+    private LocalDateTime created;
+    private int MAX_TIME = 60; // seconds
+
+    public Session() {
+        this.created = LocalDateTime.now();
+    }
+
+    public boolean isExpired() {
+        if (Duration.between(this.created, LocalDateTime.now()).getSeconds() > MAX_TIME) {
+            return true;
+        }
+        return false;
+    }
+}
