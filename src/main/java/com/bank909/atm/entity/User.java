@@ -38,4 +38,25 @@ public class User {
     public void setCreated(OffsetDateTime created) {
         this.created = created;
     }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hashCode(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (obj instanceof User) {
+            if (((User) obj).getId().equals(getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

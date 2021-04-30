@@ -8,22 +8,20 @@ import java.time.OffsetDateTime;
 public class BankAccount {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private BigDecimal balance;
     private Long accountNumber;
+    private BigDecimal balance;
     private OffsetDateTime created;
     private OffsetDateTime updated;
 
     @OneToOne
     private User user;
 
-    public Long getId() {
-        return id;
+    public Long getAccountNumber() {
+        return accountNumber;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setAccountNumber(Long accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
     public BigDecimal getBalance() {
@@ -50,13 +48,6 @@ public class BankAccount {
         this.updated = updated;
     }
 
-    public Long getAccountNumber() {
-        return accountNumber;
-    }
-
-    public void setAccountNumber(Long accountNumber) {
-        this.accountNumber = accountNumber;
-    }
 
     public User getUser() {
         return user;
@@ -64,5 +55,26 @@ public class BankAccount {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hashCode(accountNumber);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (obj instanceof BankAccount) {
+            if (((BankAccount) obj).getAccountNumber().equals(getAccountNumber())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
