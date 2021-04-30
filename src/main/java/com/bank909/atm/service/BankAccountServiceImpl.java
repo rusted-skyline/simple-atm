@@ -26,12 +26,6 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
-    public Optional<BankAccount> findById(Long id) {
-        Optional<BankAccount> bankAccount = bankAccountRepository.findById(id);
-        return bankAccount;
-    }
-
-    @Override
     public Optional<BankAccount> findByAccountNumber(Long accountNumber) {
         Optional<BankAccount> bankAccount = bankAccountRepository.findByAccountNumber(accountNumber);
         return bankAccount;

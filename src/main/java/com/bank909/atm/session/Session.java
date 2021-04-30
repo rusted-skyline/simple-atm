@@ -6,9 +6,11 @@ import java.time.LocalDateTime;
 
 public class Session {
     private LocalDateTime created;
+    private Long accountNumber;
     private int MAX_TIME = 60; // seconds
 
-    public Session() {
+    public Session(Long accountNumber) {
+        this.accountNumber = accountNumber;
         this.created = LocalDateTime.now();
     }
 
@@ -17,5 +19,9 @@ public class Session {
             return true;
         }
         return false;
+    }
+
+    public Long getAccountNumber() {
+        return accountNumber;
     }
 }

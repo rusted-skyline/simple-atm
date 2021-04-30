@@ -9,8 +9,7 @@ import java.util.Optional;
 
 public interface BankAccountService {
 
-    Optional<BankAccount> findById(Long id);
     Optional<BankAccount> findByAccountNumber(Long accountNumber);
-    void deposit(Long id, BigDecimal amount) throws BankAccountDoesNotExist;
-    void withdraw(Long id, BigDecimal amount) throws BankAccountDoesNotExist, InsufficientBalanceException;
+    void deposit(Long accountNumber, BigDecimal amount) throws BankAccountDoesNotExist;
+    void withdraw(Long accountNumber, BigDecimal amount) throws BankAccountDoesNotExist, InsufficientBalanceException;
 }
