@@ -12,12 +12,13 @@ INSERT INTO user (pin, created) VALUES
 
 CREATE TABLE bank_account (
     id bigint AUTO_INCREMENT PRIMARY KEY,
-    user_id long,
+    user_id bigint NOT NULL,
+    account_number bigint NOT NULL,
     balance decimal(10,2) NOT NULL,
     created datetime NOT NULL,
     updated datetime NOT NULL,
-    CONSTRAINT fk_user FOREIGN KEY (id) REFERENCES user(id)
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES user(id)
 );
 
-INSERT INTO bank_account (balance, user_id, created, updated) VALUES
-    (0, 1, '2021-04-28 00:00:00', '2021-04-28 00:00:00');
+INSERT INTO bank_account (balance, account_number, user_id, created, updated) VALUES
+    (0, 1234567812345678, 1, '2021-04-28 00:00:00', '2021-04-28 00:00:00');

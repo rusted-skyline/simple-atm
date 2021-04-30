@@ -33,12 +33,17 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
-    public void deposit(Long id, BigDecimal amount) throws BankAccountDoesNotExist {
-        Optional<BankAccount> bankAccount = bankAccountRepository.findById(id);
+    public Optional<BankAccount> findByAccountNumber(Long accountNumber) {
+        Optional<BankAccount> bankAccount = bankAccountRepository.findByAccountNumber(accountNumber);
+        return bankAccount;
+    }
+
+    @Override
+    public void deposit(Long accountNumber, BigDecimal amount) throws BankAccountDoesNotExist {
+        Optional<BankAccount> bankAccount = bankAccountRepository.findByAccountNumber(accountNumber);
         if (bankAccount.isPresent()) {
             BankAccount account = bankAccount.get();
             account.setBalance(account.getBalance().add(amount));
-            log.info(String.valueOf(account.getBalance()));
             bankAccountRepository.save(account);
         } else {
             throw new BankAccountDoesNotExist();
@@ -46,8 +51,8 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
-    public void withdraw(Long id, BigDecimal amount) throws BankAccountDoesNotExist, InsufficientBalanceException {
-        Optional<BankAccount> bankAccount = bankAccountRepository.findById(id);
+    public void withdraw(Long accountNumber, BigDecimal amount) throws BankAccountDoesNotExist, InsufficientBalanceException {
+        Optional<BankAccount> bankAccount = bankAccountRepository.findByAccountNumber(accountNumber);
         if (bankAccount.isPresent()) {
             BankAccount account = bankAccount.get();
             if (account.getBalance().compareTo(amount) < 0) {

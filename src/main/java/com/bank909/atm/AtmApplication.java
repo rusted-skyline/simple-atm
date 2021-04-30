@@ -1,9 +1,7 @@
 package com.bank909.atm;
 
 import com.bank909.atm.entity.BankAccount;
-import com.bank909.atm.exception.BankAccountDoesNotExist;
 import com.bank909.atm.exception.InsufficientBalanceException;
-import com.bank909.atm.repository.BankAccountRepository;
 import com.bank909.atm.service.AuthenticationService;
 import com.bank909.atm.service.BankAccountService;
 import com.bank909.atm.session.Session;
@@ -13,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
 
 import java.io.Console;
 import java.math.BigDecimal;
@@ -47,7 +44,7 @@ public class AtmApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         Console console = System.console();
-        Long customerId = null;
+        Long accountNumber = null;
         String pin = null;
 
         if (console == null) {
@@ -60,17 +57,24 @@ public class AtmApplication implements CommandLineRunner {
         console.printf("###################################\n");
         for(;;) {
             if (session == null) {
-                customerId = Long.valueOf(String.valueOf(console.readPassword("Enter your Customer ID: ")));
+                accountNumber = Long.valueOf(String.valueOf(console.readPassword("Enter your Account Number: ")));
                 pin = String.valueOf(console.readPassword("Enter your PIN: "));
 
                 //TODO: Validate inputs
+                //  -
+                //TODO: Store global bank account?
 
-                if (authService.isAuthenticated(Long.valueOf(String.valueOf(customerId)), String.valueOf(pin))) {
-                    session = new Session();
-                    console.printf("Successfully logged in!\n");
-                } else {
-                    console.printf("Incorrect Customer ID or PIN.  Please try again.\n");
+                Optional<BankAccount> account = bankAccountService.findByAccountNumber(Long.valueOf(accountNumber));
+
+                if (account.isPresent()) {
+                    String userId = String.valueOf(account.get().getUser().getId());
+                    if (authService.isAuthenticated(Long.valueOf(String.valueOf(userId)), String.valueOf(pin))) {
+                        session = new Session();
+                        console.printf("Successfully logged in!\n");
+                        continue;
+                    }
                 }
+                console.printf("Incorrect Customer ID or PIN.  Please try again.\n");
                 continue;
 
             } else if (!session.isExpired()) {
@@ -81,7 +85,8 @@ public class AtmApplication implements CommandLineRunner {
                         "  [" + CHOICE_FOUR + "] Logout\n" +
                         "> ";
                 String choice = console.readLine(choices);
-                Optional<BankAccount> account = bankAccountService.findById(Long.valueOf(customerId));
+                //Optional<BankAccount> account = bankAccountService.findById(Long.valueOf(accountNumber));
+                Optional<BankAccount> account = bankAccountService.findByAccountNumber(Long.valueOf(accountNumber));
 
                 switch(choice) {
                     case CHOICE_ONE:
@@ -89,30 +94,32 @@ public class AtmApplication implements CommandLineRunner {
                         break;
                     case CHOICE_TWO:
                         String depositAmount = console.readLine("How much would you like to deposit? (x.xx) \n> ");
-
-                        bankAccountService.deposit(customerId, new BigDecimal(depositAmount));
-                        account = bankAccountService.findById(Long.valueOf(customerId));
+                        //TODO: Validate input
+                        bankAccountService.deposit(accountNumber, new BigDecimal(depositAmount));
+                        //TODO: BankAccountDoesNotExist
+                        account = bankAccountService.findByAccountNumber(Long.valueOf(accountNumber));
                         printBalance(console, account.get().getBalance());
                         break;
                     case CHOICE_THREE:
                         String withdrawAmount = console.readLine("How much would you like to withdraw? (x.xx) \n> ");
+                        //TODO: Validate input
                         try {
-                            bankAccountService.withdraw(customerId, new BigDecimal(withdrawAmount));
+                            bankAccountService.withdraw(accountNumber, new BigDecimal(withdrawAmount));
                         } catch (InsufficientBalanceException e) {
                             console.printf("You do not have sufficient funds to withdraw that amount.\n");
                         }
-
-                        account = bankAccountService.findById(Long.valueOf(customerId));
+                        //TODO: BankAccountDoesNotExist
+                        account = bankAccountService.findByAccountNumber(Long.valueOf(accountNumber));
                         printBalance(console, account.get().getBalance());
                         break;
                     case CHOICE_FOUR:
-                        console.printf("Thanks for choosing Bank 909 and have a great day!\n");
+                        console.printf("Thanks for choosing " + BANK_NAME + " and have a great day!\n");
                         System.exit(0);
                 }
             } else {
                 console.printf("Session expired, please re-authenticate.\n");
                 session = null;
-                customerId = null;
+                accountNumber = null;
                 pin = null;
             }
         }

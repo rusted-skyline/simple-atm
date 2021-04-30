@@ -11,6 +11,7 @@ public class BankAccount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private BigDecimal balance;
+    private Long accountNumber;
     private OffsetDateTime created;
     private OffsetDateTime updated;
 
@@ -47,5 +48,21 @@ public class BankAccount {
 
     public void setUpdated(OffsetDateTime updated) {
         this.updated = updated;
+    }
+
+    public Long getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(Long accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
