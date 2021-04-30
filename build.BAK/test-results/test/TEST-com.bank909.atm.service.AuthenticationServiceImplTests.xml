@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.bank909.atm.service.AuthenticationServiceImplTests" tests="3" skipped="0" failures="0" errors="0" timestamp="2021-04-30T00:50:02" hostname="MFPC02DX36HMD6R" time="0.227">
-  <properties/>
-  <testcase name="isAuthenticatedUserNotFound()" classname="com.bank909.atm.service.AuthenticationServiceImplTests" time="0.216"/>
-  <testcase name="testIsAuthenticatedValidPassword()" classname="com.bank909.atm.service.AuthenticationServiceImplTests" time="0.006"/>
-  <testcase name="isAuthenticatedInvalidPassword()" classname="com.bank909.atm.service.AuthenticationServiceImplTests" time="0.003"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
