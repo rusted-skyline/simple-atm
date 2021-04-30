@@ -29,7 +29,7 @@ public class AuthenticationServiceImplTests {
     void setup() {
         userService = mock(UserService.class);
         passwordValidator = mock(PasswordValidator.class);
-        
+
         testUser = new User();
         testUser.setPin(testPin);
         testUser.setId(testUserId);
