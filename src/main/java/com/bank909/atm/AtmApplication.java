@@ -75,7 +75,7 @@ public class AtmApplication implements CommandLineRunner {
                     continue;
                 }
 
-                Optional<BankAccount> account = bankAccountService.findByAccountNumber(session.getAccountNumber());
+                Optional<BankAccount> account = bankAccountService.findByAccountNumber(accountNumber);
 
                 if (account.isPresent()) {
                     String userId = String.valueOf(account.get().getUser().getId());
