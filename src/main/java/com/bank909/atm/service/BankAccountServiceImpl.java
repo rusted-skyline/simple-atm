@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 @Service
@@ -38,6 +39,7 @@ public class BankAccountServiceImpl implements BankAccountService {
         if (bankAccount.isPresent()) {
             BankAccount account = bankAccount.get();
             account.setBalance(account.getBalance().add(amount));
+            account.setUpdated(OffsetDateTime.now());
             bankAccountRepository.save(account);
         } else {
             throw new BankAccountDoesNotExist();
@@ -54,6 +56,7 @@ public class BankAccountServiceImpl implements BankAccountService {
                 throw new InsufficientBalanceException();
             }
             account.setBalance(account.getBalance().subtract(amount));
+            account.setUpdated(OffsetDateTime.now());
             bankAccountRepository.save(account);
         } else {
             throw new BankAccountDoesNotExist();
