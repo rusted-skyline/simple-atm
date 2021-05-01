@@ -2,10 +2,7 @@ package com.bank909.atm;
 
 import com.bank909.atm.entity.BankAccount;
 import com.bank909.atm.entity.User;
-import com.bank909.atm.exception.AuthenticationException;
-import com.bank909.atm.exception.BankAccountDoesNotExist;
-import com.bank909.atm.exception.InsufficientBalanceException;
-import com.bank909.atm.exception.InvalidInputException;
+import com.bank909.atm.exception.*;
 import com.bank909.atm.service.AuthenticationService;
 import com.bank909.atm.service.BankAccountService;
 import com.bank909.atm.session.Session;
@@ -19,8 +16,13 @@ import java.time.OffsetDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class AtmApplicationHelperTests {
 
@@ -125,7 +127,7 @@ class AtmApplicationHelperTests {
     }
 
     @Test
-    void testPerformTransactionGetBalance() throws InvalidInputException, BankAccountDoesNotExist, InsufficientBalanceException {
+    void testPerformTransactionGetBalance() throws InvalidInputException, BankAccountDoesNotExist, InsufficientBalanceException, InvalidAccountBalanceOperationException {
         when(bankAccountService.findByAccountNumber(Long.valueOf(accountNumber))).thenReturn(testBankAccountOptional);
         when(console.readLine(AtmApplicationHelper.CHOICE_PROMPT)).thenReturn(AtmApplicationHelper.CHOICE_ONE);
 
@@ -136,7 +138,7 @@ class AtmApplicationHelperTests {
     }
 
     @Test
-    void testPerformTransactionDeposit() throws InvalidInputException, BankAccountDoesNotExist, InsufficientBalanceException {
+    void testPerformTransactionDeposit() throws InvalidInputException, BankAccountDoesNotExist, InsufficientBalanceException, InvalidAccountBalanceOperationException {
         String depositAmount = "1.00";
         when(bankAccountService.findByAccountNumber(Long.valueOf(accountNumber))).thenReturn(testBankAccountOptional);
         when(console.readLine(AtmApplicationHelper.CHOICE_PROMPT)).thenReturn(AtmApplicationHelper.CHOICE_TWO);
@@ -150,7 +152,7 @@ class AtmApplicationHelperTests {
     }
 
     @Test
-    void testPerformTransactionWithdraw() throws InvalidInputException, BankAccountDoesNotExist, InsufficientBalanceException {
+    void testPerformTransactionWithdraw() throws InvalidInputException, BankAccountDoesNotExist, InsufficientBalanceException, InvalidAccountBalanceOperationException {
         String withdrawAmount = "1.00";
         testBankAccountOptional.get().setBalance(new BigDecimal("10.00"));
         when(bankAccountService.findByAccountNumber(Long.valueOf(accountNumber))).thenReturn(testBankAccountOptional);
@@ -162,6 +164,24 @@ class AtmApplicationHelperTests {
                 bankAccountService);
         verify(bankAccountService).withdraw(Long.valueOf(accountNumber), new BigDecimal(withdrawAmount));
         verify(bankAccountService).findByAccountNumber(Long.valueOf(accountNumber));
+    }
+
+    @Test
+    void testAmountIsValidTooBig() {
+        String tooBig = "99999999999.99";
+        assertFalse(AtmApplicationHelper.amountIsValid(tooBig));
+    }
+
+    @Test
+    void testAmountIsValidMax() {
+        String tooBig = "9999999999.99";
+        assertTrue(AtmApplicationHelper.amountIsValid(tooBig));
+    }
+
+    @Test
+    void testAmountIsValidNegative() {
+        String negative = "-1.00";
+        assertFalse(AtmApplicationHelper.amountIsValid(negative));
     }
 
     @Test
@@ -185,7 +205,7 @@ class AtmApplicationHelperTests {
                 AtmApplicationHelper.performTransaction(console,
                         new Session(Long.valueOf(accountNumber)),
                         bankAccountService);
-            } catch (InvalidInputException | InsufficientBalanceException | BankAccountDoesNotExist e) {
+            } catch (InvalidInputException | InsufficientBalanceException | BankAccountDoesNotExist | InvalidAccountBalanceOperationException e) {
                 e.printStackTrace();
             }
         });

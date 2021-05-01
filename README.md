@@ -54,6 +54,8 @@ PIN: 1234
 1. I chose to use `java.io.Console` because it provides a convenient way to get user input, particularly 
    the `readPassword()` method, which will suppress printing input characters 
    to the console for additional security.
+1. I chose to make a custom `Session` object with a 5 minute timeout to emulate a standard
+   security pattern of limited session time.  Upon expiration re-authentication is required.
 1. I chose to refactor out the core console application logic into a separate,
    static class `AtmApplicationHelper` which helped simplify the main `AtmApplication`
    class and make the core application business logic easier to test.  However,
@@ -66,6 +68,9 @@ PIN: 1234
    work factor of the algorithm which helps mitigate brute forcing the hash. An alternative
    I considered is bcrypt which has smaller storage requirements.  See the "Next Steps" 
    section for further discussion of future improvements that could be made.
+1. I chose to make the maximum allowable deposit, withdraw, or balance amount $9999999999.99, which
+   is one penny shy of 1 trillion dollars.  This was an arbitrary decision made by me
+   for this project, but something I would not pick without consulting the business in a business setting.
 
 ## Next Steps I Would Explore
 

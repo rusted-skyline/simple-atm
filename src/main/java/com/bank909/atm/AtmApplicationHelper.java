@@ -1,10 +1,7 @@
 package com.bank909.atm;
 
 import com.bank909.atm.entity.BankAccount;
-import com.bank909.atm.exception.AuthenticationException;
-import com.bank909.atm.exception.BankAccountDoesNotExist;
-import com.bank909.atm.exception.InsufficientBalanceException;
-import com.bank909.atm.exception.InvalidInputException;
+import com.bank909.atm.exception.*;
 import com.bank909.atm.service.AuthenticationService;
 import com.bank909.atm.service.BankAccountService;
 import com.bank909.atm.session.Session;
@@ -16,6 +13,8 @@ import java.io.Console;
 import java.math.BigDecimal;
 import java.util.Locale;
 import java.util.Optional;
+
+import static com.bank909.atm.util.Constants.MAX_AMOUNT;
 
 public class AtmApplicationHelper {
 
@@ -33,8 +32,8 @@ public class AtmApplicationHelper {
             "  [" + CHOICE_FOUR + "] Logout\n" +
             "> ";
 
-    private static final int VALID_ACCOUNT_NUMBER_LENGTH = 16;
-    private static final int VALID_PIN_LENGTH = 4;
+    public static final int VALID_ACCOUNT_NUMBER_LENGTH = 16;
+    public static final int VALID_PIN_LENGTH = 4;
 
     public static Session authenticate(Console console,
                                        BankAccountService bankAccountService,
@@ -68,7 +67,8 @@ public class AtmApplicationHelper {
     public static void performTransaction(Console console,
                                           Session session,
                                           BankAccountService bankAccountService)
-            throws InvalidInputException, BankAccountDoesNotExist, InsufficientBalanceException {
+            throws InvalidInputException, BankAccountDoesNotExist,
+                    InsufficientBalanceException, InvalidAccountBalanceOperationException {
         String choice = console.readLine(CHOICE_PROMPT);
 
         switch (choice) {
@@ -115,6 +115,12 @@ public class AtmApplicationHelper {
         BigDecimalValidator validator = CurrencyValidator.getInstance();
         BigDecimal validatedAmt = validator.validate(amount, Locale.US);
         if (validatedAmt == null) {
+            return false;
+        }
+        if (validatedAmt.compareTo(MAX_AMOUNT) > 0) {
+            return false;
+        }
+        if (validatedAmt.compareTo(new BigDecimal(0)) < 0) {
             return false;
         }
         return true;

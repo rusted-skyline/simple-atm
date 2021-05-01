@@ -3,9 +3,9 @@ package com.bank909.atm.service;
 import com.bank909.atm.entity.BankAccount;
 import com.bank909.atm.exception.BankAccountDoesNotExist;
 import com.bank909.atm.exception.InsufficientBalanceException;
+import com.bank909.atm.exception.InvalidAccountBalanceOperationException;
 import com.bank909.atm.repository.BankAccountRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.bank909.atm.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +16,6 @@ import java.util.Optional;
 
 @Service
 public class BankAccountServiceImpl implements BankAccountService {
-
-    private final static Logger log = LoggerFactory.getLogger(BankAccountServiceImpl.class);
 
     private final BankAccountRepository bankAccountRepository;
 
@@ -34,13 +32,17 @@ public class BankAccountServiceImpl implements BankAccountService {
 
     @Override
     @Transactional
-    public void deposit(Long accountNumber, BigDecimal amount) throws BankAccountDoesNotExist {
+    public void deposit(Long accountNumber, BigDecimal amount) throws BankAccountDoesNotExist, InvalidAccountBalanceOperationException {
         Optional<BankAccount> bankAccount = bankAccountRepository.findByAccountNumber(accountNumber);
         if (bankAccount.isPresent()) {
             BankAccount account = bankAccount.get();
-            account.setBalance(account.getBalance().add(amount));
-            account.setUpdated(OffsetDateTime.now());
-            bankAccountRepository.save(account);
+            if ((account.getBalance().add(amount)).compareTo(Constants.MAX_AMOUNT) <= 0) {
+                account.setBalance(account.getBalance().add(amount));
+                account.setUpdated(OffsetDateTime.now());
+                bankAccountRepository.save(account);
+            } else {
+                throw new InvalidAccountBalanceOperationException("Deposit exceeds maximum balance.");
+            }
         } else {
             throw new BankAccountDoesNotExist("Account does not exist.");
         }

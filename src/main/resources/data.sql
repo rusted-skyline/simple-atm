@@ -13,7 +13,7 @@ INSERT INTO user (pin, created) VALUES
 CREATE TABLE bank_account (
     account_number bigint NOT NULL,
     user_id bigint NOT NULL,
-    balance decimal(10,2) NOT NULL,
+    balance decimal(12,2) NOT NULL,
     created datetime NOT NULL,
     updated datetime NOT NULL,
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES user(id),

@@ -1,9 +1,6 @@
 package com.bank909.atm;
 
-import com.bank909.atm.exception.AuthenticationException;
-import com.bank909.atm.exception.BankAccountDoesNotExist;
-import com.bank909.atm.exception.InsufficientBalanceException;
-import com.bank909.atm.exception.InvalidInputException;
+import com.bank909.atm.exception.*;
 import com.bank909.atm.service.AuthenticationService;
 import com.bank909.atm.service.BankAccountService;
 import com.bank909.atm.session.Session;
@@ -68,6 +65,8 @@ public class AtmApplication implements CommandLineRunner {
                     continue;
                 } catch (InsufficientBalanceException e){
                     console.printf(ERROR_PREFIX + "You do not have sufficient funds to withdraw that amount.\n");
+                } catch (InvalidAccountBalanceOperationException e) {
+                    console.printf(ERROR_PREFIX + "Invalid deposit or withdraw operation.");
                 }
 
             } else {

@@ -3,6 +3,7 @@ package com.bank909.atm.service;
 import com.bank909.atm.entity.BankAccount;
 import com.bank909.atm.exception.BankAccountDoesNotExist;
 import com.bank909.atm.exception.InsufficientBalanceException;
+import com.bank909.atm.exception.InvalidAccountBalanceOperationException;
 import com.bank909.atm.repository.BankAccountRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,7 +46,7 @@ public class BankAccountServiceImplTests {
     }
 
     @Test
-    void testDeposit() throws BankAccountDoesNotExist, InterruptedException {
+    void testDeposit() throws BankAccountDoesNotExist, InterruptedException, InvalidAccountBalanceOperationException {
         BankAccountService bankAccountService = new BankAccountServiceImpl(bankAccountRepository);
         when(bankAccountRepository.findByAccountNumber(testBankAccount.getAccountNumber()))
                 .thenReturn(testBankAccountOptional);
@@ -56,6 +57,19 @@ public class BankAccountServiceImplTests {
         bankAccountService.deposit(testBankAccount.getAccountNumber(), depositAmount);
         assertEquals(testBankAccountOptional.get().getBalance(), depositAmount);
         assertNotEquals(testBankAccountOptional.get().getUpdated(), testBankAccountOptional.get().getCreated());
+    }
+
+    @Test
+    void testDepositExceedMaxBalance() throws BankAccountDoesNotExist, InterruptedException, InvalidAccountBalanceOperationException {
+        BankAccountService bankAccountService = new BankAccountServiceImpl(bankAccountRepository);
+        when(bankAccountRepository.findByAccountNumber(testBankAccount.getAccountNumber()))
+                .thenReturn(testBankAccountOptional);
+
+        BigDecimal depositAmount = new BigDecimal("1000000000000.00");
+
+        assertThrows(InvalidAccountBalanceOperationException.class, () -> {
+            bankAccountService.deposit(testBankAccount.getAccountNumber(), depositAmount);
+        });
     }
 
     @Test
@@ -70,7 +84,6 @@ public class BankAccountServiceImplTests {
         BigDecimal withdrawAmount = new BigDecimal("10.00");
         bankAccountService.withdraw(testBankAccount.getAccountNumber(), withdrawAmount);
         assertEquals(testBankAccountOptional.get().getBalance(), new BigDecimal("0.00"));
-
         assertNotEquals(testBankAccountOptional.get().getUpdated(), testBankAccountOptional.get().getCreated());
     }
 

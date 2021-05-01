@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 public class Session {
     private LocalDateTime created;
     private Long accountNumber;
-    private int MAX_TIME = 60; // seconds
+    private int MAX_TIME = 60*5; // seconds
 
     public Session(Long accountNumber) {
         this.accountNumber = accountNumber;
