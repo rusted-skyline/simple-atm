@@ -20,7 +20,7 @@ Run the tests:
 ./test.sh
 ```
 
-## Usage
+## Run
 
 Run the application:
 ```
