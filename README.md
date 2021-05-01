@@ -39,6 +39,7 @@ PIN: 1234
 ## Assumptions
 
 1. Only one customer can login at a time
+1. Only US dollars are supported
 1. User and account creation out of scope
 
 ## Decisions and Tradeoffs
@@ -91,3 +92,4 @@ PIN: 1234
    unique account numbers.  This is far more complex than the naive 16 digit number
    scheme I have used and involves use of and compliance with several standards (e.g. ISO/IEC 7812,
    ISO-3166-1, bank identification numbers (BIN), etc).
+1. Supporting other currencies.
