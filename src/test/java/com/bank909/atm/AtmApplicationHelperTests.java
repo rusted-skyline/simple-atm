@@ -127,7 +127,7 @@ class AtmApplicationHelperTests {
     }
 
     @Test
-    void testPerformTransactionGetBalance() throws InvalidInputException, BankAccountDoesNotExist, InsufficientBalanceException, InvalidAccountBalanceOperationException {
+    void testPerformTransactionGetBalance() throws InvalidInputException, BankAccountDoesNotExist, InvalidAccountBalanceOperationException {
         when(bankAccountService.findByAccountNumber(Long.valueOf(accountNumber))).thenReturn(testBankAccountOptional);
         when(console.readLine(AtmApplicationHelper.CHOICE_PROMPT)).thenReturn(AtmApplicationHelper.CHOICE_ONE);
 
@@ -138,7 +138,7 @@ class AtmApplicationHelperTests {
     }
 
     @Test
-    void testPerformTransactionDeposit() throws InvalidInputException, BankAccountDoesNotExist, InsufficientBalanceException, InvalidAccountBalanceOperationException {
+    void testPerformTransactionDeposit() throws InvalidInputException, BankAccountDoesNotExist, InvalidAccountBalanceOperationException {
         String depositAmount = "1.00";
         when(bankAccountService.findByAccountNumber(Long.valueOf(accountNumber))).thenReturn(testBankAccountOptional);
         when(console.readLine(AtmApplicationHelper.CHOICE_PROMPT)).thenReturn(AtmApplicationHelper.CHOICE_TWO);
@@ -152,7 +152,7 @@ class AtmApplicationHelperTests {
     }
 
     @Test
-    void testPerformTransactionWithdraw() throws InvalidInputException, BankAccountDoesNotExist, InsufficientBalanceException, InvalidAccountBalanceOperationException {
+    void testPerformTransactionWithdraw() throws InvalidInputException, BankAccountDoesNotExist, InvalidAccountBalanceOperationException {
         String withdrawAmount = "1.00";
         testBankAccountOptional.get().setBalance(new BigDecimal("10.00"));
         when(bankAccountService.findByAccountNumber(Long.valueOf(accountNumber))).thenReturn(testBankAccountOptional);
@@ -205,7 +205,7 @@ class AtmApplicationHelperTests {
                 AtmApplicationHelper.performTransaction(console,
                         new Session(Long.valueOf(accountNumber)),
                         bankAccountService);
-            } catch (InvalidInputException | InsufficientBalanceException | BankAccountDoesNotExist | InvalidAccountBalanceOperationException e) {
+            } catch (InvalidInputException | BankAccountDoesNotExist | InvalidAccountBalanceOperationException e) {
                 e.printStackTrace();
             }
         });

@@ -5,11 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Optional;
 
@@ -19,7 +15,6 @@ import static com.bank909.atm.service.PasswordValidator.validatePassword;
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     private static Logger log = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
-
     private final UserService userService;
 
     public AuthenticationServiceImpl(UserService userService) {

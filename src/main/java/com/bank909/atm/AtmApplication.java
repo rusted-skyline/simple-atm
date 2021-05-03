@@ -10,6 +10,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.Console;
 
+/**
+ * A simple, console-based interface that models a very primitive ATM interface.
+ * Main runtime entry point into the app.
+ */
 @SpringBootApplication
 public class AtmApplication implements CommandLineRunner {
 
@@ -17,6 +21,7 @@ public class AtmApplication implements CommandLineRunner {
     private static AuthenticationService authService;
     private static BankAccountService bankAccountService;
 
+    // prefix for printing errors to the console
     private final String ERROR_PREFIX = "Error: ";
 
     public AtmApplication(AuthenticationService authService, BankAccountService bankAccountService) {
@@ -63,10 +68,9 @@ public class AtmApplication implements CommandLineRunner {
                 } catch (BankAccountDoesNotExist e) {
                     console.printf(ERROR_PREFIX + "Could not locate account.\n");
                     continue;
-                } catch (InsufficientBalanceException e){
-                    console.printf(ERROR_PREFIX + "You do not have sufficient funds to withdraw that amount.\n");
                 } catch (InvalidAccountBalanceOperationException e) {
                     console.printf(ERROR_PREFIX + "Invalid deposit or withdraw operation.");
+                    continue;
                 }
 
             } else {

@@ -3,7 +3,10 @@ package com.bank909.atm.session;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-
+/**
+ * In-memory session with hard-coded 5 minute timeout.
+ * Holds an account number of current logged in user.
+ */
 public class Session {
     private LocalDateTime created;
     private Long accountNumber;

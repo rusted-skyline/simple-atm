@@ -6,6 +6,12 @@ import java.util.Optional;
 
 public interface UserService {
 
+    /**
+     * Find a user by id
+     *
+     * @param id of user
+     * @return a user
+     */
     Optional<User> findById(Long id);
 
 }

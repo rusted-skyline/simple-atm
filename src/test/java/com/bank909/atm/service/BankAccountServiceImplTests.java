@@ -2,7 +2,6 @@ package com.bank909.atm.service;
 
 import com.bank909.atm.entity.BankAccount;
 import com.bank909.atm.exception.BankAccountDoesNotExist;
-import com.bank909.atm.exception.InsufficientBalanceException;
 import com.bank909.atm.exception.InvalidAccountBalanceOperationException;
 import com.bank909.atm.repository.BankAccountRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -60,7 +59,7 @@ public class BankAccountServiceImplTests {
     }
 
     @Test
-    void testDepositExceedMaxBalance() throws BankAccountDoesNotExist, InterruptedException, InvalidAccountBalanceOperationException {
+    void testDepositExceedMaxBalance() {
         BankAccountService bankAccountService = new BankAccountServiceImpl(bankAccountRepository);
         when(bankAccountRepository.findByAccountNumber(testBankAccount.getAccountNumber()))
                 .thenReturn(testBankAccountOptional);
@@ -73,7 +72,7 @@ public class BankAccountServiceImplTests {
     }
 
     @Test
-    void testWithdraw() throws BankAccountDoesNotExist, InsufficientBalanceException, InterruptedException {
+    void testWithdraw() throws BankAccountDoesNotExist, InterruptedException, InvalidAccountBalanceOperationException {
         BankAccountService bankAccountService = new BankAccountServiceImpl(bankAccountRepository);
         testBankAccountOptional.get().setBalance(new BigDecimal("10.00"));
         when(bankAccountRepository.findByAccountNumber(testBankAccount.getAccountNumber()))
@@ -88,13 +87,13 @@ public class BankAccountServiceImplTests {
     }
 
     @Test
-    void testWithdrawOverdrawn() throws BankAccountDoesNotExist {
+    void testWithdrawOverdrawn() {
         BankAccountService bankAccountService = new BankAccountServiceImpl(bankAccountRepository);
         when(bankAccountRepository.findByAccountNumber(testBankAccount.getAccountNumber()))
                 .thenReturn(testBankAccountOptional);
 
         BigDecimal withdrawAmount = new BigDecimal("10.00");
-        assertThrows(InsufficientBalanceException.class, () -> {
+        assertThrows(InvalidAccountBalanceOperationException.class, () -> {
             bankAccountService.withdraw(testBankAccount.getAccountNumber(), withdrawAmount);
         });
     }

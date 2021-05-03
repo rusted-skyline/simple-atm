@@ -1,21 +1,28 @@
 package com.bank909.atm;
 
 import com.bank909.atm.entity.BankAccount;
-import com.bank909.atm.exception.*;
+import com.bank909.atm.exception.AuthenticationException;
+import com.bank909.atm.exception.BankAccountDoesNotExist;
+import com.bank909.atm.exception.InvalidAccountBalanceOperationException;
+import com.bank909.atm.exception.InvalidInputException;
 import com.bank909.atm.service.AuthenticationService;
 import com.bank909.atm.service.BankAccountService;
 import com.bank909.atm.session.Session;
-import com.bank909.atm.util.CurrencyUtil;
 import org.apache.commons.validator.routines.BigDecimalValidator;
 import org.apache.commons.validator.routines.CurrencyValidator;
 
 import java.io.Console;
 import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.Currency;
 import java.util.Locale;
 import java.util.Optional;
 
 import static com.bank909.atm.util.Constants.MAX_AMOUNT;
 
+/**
+ * Helper methods that support AtmApplication.
+ */
 public class AtmApplicationHelper {
 
     public static final String BANK_NAME = "Bank 909";
@@ -67,8 +74,7 @@ public class AtmApplicationHelper {
     public static void performTransaction(Console console,
                                           Session session,
                                           BankAccountService bankAccountService)
-            throws InvalidInputException, BankAccountDoesNotExist,
-                    InsufficientBalanceException, InvalidAccountBalanceOperationException {
+            throws InvalidInputException, BankAccountDoesNotExist, InvalidAccountBalanceOperationException {
         String choice = console.readLine(CHOICE_PROMPT);
 
         switch (choice) {
@@ -108,7 +114,14 @@ public class AtmApplicationHelper {
     }
 
     public static void printBalance(Console console, BigDecimal balance) {
-        console.printf("Your account balance is: " + CurrencyUtil.formatUSDCurrencyString(balance) + "\n");
+        console.printf("Your account balance is: " + formatUSDCurrencyString(balance) + "\n");
+    }
+
+    public static String formatUSDCurrencyString(BigDecimal amount) {
+        Locale us = new Locale("en", "US");
+        Currency dollars = Currency.getInstance(us);
+        NumberFormat usdFormat = NumberFormat.getCurrencyInstance(us);
+        return usdFormat.format(amount);
     }
 
     public static boolean amountIsValid(String amount) {

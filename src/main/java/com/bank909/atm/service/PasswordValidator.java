@@ -7,11 +7,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 
-/*
+/**
  * A utility for validating PBKDF2 passwords.
  * This was adapted from this post
  * https://howtodoinjava.com/java/java-security/how-to-generate-secure-password-hash-md5-sha-pbkdf2-bcrypt-examples/
- */
+ **/
 public class PasswordValidator {
     public static boolean validatePassword(String providedPassword, String storedPassword) throws InvalidKeySpecException, NoSuchAlgorithmException {
         String[] parts = storedPassword.split(":");
